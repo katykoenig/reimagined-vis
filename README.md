@@ -1,4 +1,4 @@
-# reimagined-vis
+# Team Name: reimagined-vis
 
 ## Team Members: 
 Zipporah Klain <br />
