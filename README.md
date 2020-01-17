@@ -1,9 +1,9 @@
 # reimagined-vis
 
 ## Team Members: 
-Zipporah Klain
-Kathryn (Katy) Koenig
-Lucy Li
+Zipporah Klain <br />
+Kathryn (Katy) Koenig <br />
+Lucy Li <br />
 Belen Michel Torino
 
 ## Topic Description: 
