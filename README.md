@@ -1,7 +1,6 @@
 # Team Name: reimagined-vis
 
-## Team Members: 
-Zipporah Klain <br />
+## Team Members:
 Kathryn (Katy) Koenig <br />
 Lucy Li <br />
 Belen Michel Torino
