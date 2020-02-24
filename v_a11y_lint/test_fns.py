@@ -1,7 +1,6 @@
 '''
 Makes test charts for checking linter
 '''
-
 import altair as alt
 import pandas as pd
 from vega_datasets import data
@@ -96,3 +95,8 @@ def set_theme():
 
 def reset_theme():
     alt.themes.enable('default')
+
+
+
+# for non default theme: call set_theme()
+# for default theme: reset_theme()
