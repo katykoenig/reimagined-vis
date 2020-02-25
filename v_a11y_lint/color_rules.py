@@ -1,6 +1,7 @@
 '''
 Functions to check for accessible colors & color maps
 '''
+from ast import literal_eval
 from itertools import combinations
 import json
 
@@ -13,33 +14,54 @@ COLOR_MAP_INFO = ['color-maps/vega-schema.json',
 def get_rgb(hex_num):
     '''
     Takes a hex and converts it to RGB color values
+
+    Input:
+
+    Output:
     '''
     only_num = hex_num[1:]
-    return tuple(int(only_num[i:i+2], 16) for i in (0, 2, 4))
+    return tuple(int(only_num[i:i + 2], 16) for i in (0, 2, 4))
 
 
 def get_luminence(rgb_tup):
     '''
     Calculates luminence number for RBG color value
+
+    Input:
+
+    Output:
     '''
     return 0.2126 * rgb_tup[0] + 0.7152 * rgb_tup[1] + 0.0722 * rgb_tup[2]
 
 
 def color_check(color):
     '''
+    Checks to ensure color in rgb tuble and converts if not
+
+    Input:
+
+    Output:
     '''
     if color[0] == '#':
         return get_rgb(color)
+    elif color[0] == 'r':
+        return literal_eval(color[3:])
     else:
-        return color
+        color = translate_color(color)
+        return color_check(color)
 
 
 def calc_color_contrast(color_tup):
     '''
     Calculates the color constrast between two colors
+
+    Inputs:
+
+    Outputs:
     '''
     for i, color in enumerate(color_tup):
         rgb_color = color_check(color)
+        print(rgb_color)
         lum = get_luminence(rgb_color)
         if i == 0:
             num = lum + 0.05
@@ -56,6 +78,8 @@ def check_lumin(color_tup, thres=7):
     Inputs:
         specs_dict['config']['text']['color']
         specs_dict['config']['background']
+
+    Outputs:
     '''
     contrast = calc_color_contrast((color_tup[0], color_tup[1]))
     if contrast < thres:
@@ -75,7 +99,9 @@ def translate_color(pal_str, color_jsons=COLOR_MAP_INFO):
     all_info = {}
     for i_json in color_jsons:
         with open(i_json) as f:
-            all_info.update(json.load(f))
+            raw_json = json.load(f)
+            for k, v in raw_json.items():
+                all_info[k.lower()] = v
     return all_info[pal_str]
 
 
@@ -86,6 +112,8 @@ def check_palette(color_range, thres=2):
     
     Input:
         specs_dict['config']['range']
+
+    Output:
     '''
     issues = {}
     for pal_type, palette in color_range.items():
@@ -102,14 +130,21 @@ def check_palette(color_range, thres=2):
 
 def check_all_color(chart_configs):
     '''
+    Checks all colors in a chart to ensure that color
+    combinations are accessible
+
+    Inputs:
+
+    Outputs:
+
     '''
     issues = {}
     for key, val in chart_configs.items():
         issues.update(check_palette(chart_configs['range']))
         issues['text to background'] = {check_lumin((chart_configs['background'],
                       chart_configs['text']['color']), 4.5)}
-        # issues['title color to background'] = {check_lumin((chart_configs['background'],
-        #               chart_configs['title']['color']), 4.5)}
+        issues['title color to background'] = {check_lumin((chart_configs['background'],
+                      chart_configs['title']['color']), 4.5)}
     return issues
 
 
