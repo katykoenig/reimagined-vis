@@ -20,9 +20,9 @@
 *  Figure out use of "description" attribute, i.e. chart.discription --> is this accessible on JAWS? If yes, add as feature to lint for
 
 ### Writing
-*  PROJECT DESCRIPTION
-*  REQUIREMENTS SUMMARY
-*  PROTOTYPE DESCRIPTION
+* PROJECT DESCRIPTION
+* REQUIREMENTS SUMMARY
+* PROTOTYPE DESCRIPTION
   *  Overview
   *  Description
   *  Rationale
