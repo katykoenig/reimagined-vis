@@ -5,7 +5,9 @@ from itertools import combinations
 import json
 
 COLOR_MAP_INFO = ['color-maps/vega-schema.json', 
-                  'color-maps/colormap.json']
+                  'color-maps/colormap.json',
+                  'color-maps/interpColorMaps.json',
+                  'color-maps/basic_colors.json']
 
 
 def get_rgb(hex_num):
