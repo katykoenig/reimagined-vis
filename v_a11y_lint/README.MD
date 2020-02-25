@@ -12,6 +12,7 @@
 *  Check for direct labels instead of labels only located in keys
 *  Check "fill" for marks to ensure enough contrast between background color
 *  Write tests for our functions
+*  Create jupyter notebook for Friday's in class prototype presentation
 
 ### Non-coding Specific
 
