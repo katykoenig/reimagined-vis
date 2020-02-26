@@ -22,3 +22,9 @@ def check_title(chart_obj, min_len):
         return 'Missing chart title'
     elif len(chart_obj.title) < min_len:
         return 'Chart title lacks description'
+
+
+def check_all_font(chart_configs):
+    '''
+    '''
+    print('do something')
