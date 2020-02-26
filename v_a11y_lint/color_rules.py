@@ -61,7 +61,6 @@ def calc_color_contrast(color_tup):
     '''
     for i, color in enumerate(color_tup):
         rgb_color = color_check(color)
-        print(rgb_color)
         lum = get_luminence(rgb_color)
         if i == 0:
             num = lum + 0.05
@@ -128,7 +127,7 @@ def check_palette(color_range, thres=2):
     return issues
 
 
-def check_all_color(chart_configs):
+def check_all_color(color_dict):
     '''
     Checks all colors in a chart to ensure that color
     combinations are accessible
@@ -138,23 +137,22 @@ def check_all_color(chart_configs):
     Outputs:
 
     '''
+    # instead of feeding in specific keys instead it would be better to abstract
+    # and maybe recursively iterate into chart to pull anything w/ color
+
     issues = {}
-    for key, val in chart_configs.items():
-        issues.update(check_palette(chart_configs['range']))
-        issues['text to background'] = {check_lumin((chart_configs['background'],
-                      chart_configs['text']['color']), 4.5)}
-        issues['title color to background'] = {check_lumin((chart_configs['background'],
-                      chart_configs['title']['color']), 4.5)}
+    for key, val in color_dict.items():
+        if key == 'range':
+            issues.update(check_palette(color_dict[key]))
+        issues['text to background'] = {check_lumin((color_dict['background'],
+                      color_dict['text']['color']), 4.5)}
+        issues['title color to background'] = {check_lumin((color_dict['background'],
+                      color_dict['title']['color']), 4.5)}
     return issues
 
-
-
-# want 7:1 for text
 
 # right now, it's linting a theme, not the actual chart itself
 # i.e. it is linting all possibilities not what is actually being produced
 # like all the color maps, even if none are used
-
 # TODO: figure out what from config actually shown & only print errors w/r/t those aspects
 # TODO: have it automatically add in defaults if not specified in theme
-# TODO: add other color maps, e.g. magma, viridis, and plain colors, e.g. 'darkblue'
