@@ -2,6 +2,12 @@
 Functions to check for accessible fonts & font sizes
 '''
 
+DEFAULT_FONT_INFO = {'fontSize': 11,
+                     'fontWeight': {"normal": 400,
+                                    "bold": 700},
+                     'font': 'Helvetica Neue'
+                     }
+
 def check_font_size(config_val, thres=16):
     '''
     Checks that all fonts are above a threshold value

@@ -13,10 +13,11 @@
 *  Check "fill" for marks to ensure enough contrast between background color
 *  Write tests for our functions
 *  Create jupyter notebook for Friday's in class prototype presentation
+*  Incorporate color defaults into check
 
 ### Non-coding Specific
 
-*  MOST IMPORTANT: Figure out default theme/config in Altair
+*  (DONE) Figure out default themes/config in Altair
 *  Research re. best font practices (serifed vs. sans serifed, what should we do w/ font weight?)
 *  File altair issue as patterns encoding not supported
 *  Figure out use of "description" attribute, i.e. chart.discription --> is this accessible on JAWS? If yes, add as feature to lint
