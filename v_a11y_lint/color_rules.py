@@ -4,6 +4,10 @@ Functions to check for accessible colors & color maps
 from ast import literal_eval
 from itertools import combinations
 import json
+from colormath.color_diff import delta_e_cie2000
+from colormath.color_objects import XYZColor, sRGBColor, LabColor
+from colormath.color_conversions import convert_color
+
 
 COLOR_MAP_INFO = ['color-maps/vega-schema.json', 
                   'color-maps/colormap.json',
@@ -16,6 +20,20 @@ DEFAULT_COLORS = {'categorical': 'tableau10',
                   'temporal': 'viridis',
                   'ramp': 'blues'
                    }
+
+
+def grab_default(scale_type, defaults=DEFAULT_COLORS):
+    '''
+    Grabs the default color/color scheme for Altair if one not
+    explicitly stated in chart's configurations
+
+    Inputs:
+        scale_type(str): type of color scale to be used
+        defaults: a dictionary mapping type of color scale to default scale used
+
+    Outputs: a list of hex strings representing the scale's color
+    '''
+    return translate_color(defaults[scale_type])
 
 
 def get_rgb(hex_num):
@@ -61,6 +79,36 @@ def color_check(color):
         return color_check(color)
 
 
+def check_distance(color_tup, thres=2.3):
+    '''
+    Checks distance between two colors to ensure just-noticeable difference
+    requirement met
+
+    Inputs:
+
+    Outputs:
+    '''
+    if calc_color_dist(color_tup) < thres:
+        return 'colors too similar'
+
+
+def calc_color_dist(color_tup):
+    '''
+    '''
+    color1 = rgb2lab(color_tup[0])
+    color2 = rgb2lab(color_tup[1])
+    return delta_e_cie2000(color1, color2)
+
+
+def rgb2lab(color):
+    '''
+    Converts from rgb color to Lab color
+    '''
+    color = color_check(color)
+    rgb = sRGBColor(color[0], color[1], color[2])
+    return convert_color(rgb, LabColor)
+
+
 def calc_color_contrast(color_tup):
     '''
     Calculates the color constrast between two colors
@@ -80,20 +128,13 @@ def calc_color_contrast(color_tup):
     return num / denom
 
 
-def check_lumin(color_tup, thres=7):
-    '''
-    Checks luminence of two colors to ensure that their
-    contrast above threshold value
-    
-    Inputs:
-        color_tup: (specs_dict['config']['text']['color'],
-                   specs_dict['config']['background'])
-        thres(int or float): threshold for contrast
-
-    Outputs: a string if the colors are too similar
-    '''
-    contrast = calc_color_contrast((color_tup[0], color_tup[1]))
-    if contrast < thres:
+def check_dist(color_tup, thres, pair_type):
+    outcome = 0
+    if pair_type == 'text':
+        outcome = calc_color_contrast(color_tup)        
+    elif pair_type == 'palette':
+        outcome = calc_color_dist(color_tup)
+    if outcome < thres:
         return 'colors too similar'
 
 
@@ -116,24 +157,12 @@ def translate_color(pal_str, color_jsons=COLOR_MAP_INFO):
     return all_info[pal_str]
 
 
-def grab_default(scale_type, defaults=DEFAULT_COLORS):
-    '''
-    Grabs the default color/color scheme for Altair if one not
-    explicitly stated in chart's configurations
-
-    Inputs:
-        scale_type(str): type of color scale to be used
-        defaults: a dictionary mapping type of color scale to default scale used
-
-    Outputs: a list of hex strings representing the scale's color
-    '''
-    return translate_color(defaults[scale_type])
-
-
-def check_palette(color_range, thres=2):
+def check_palette(color_range, thres=4.6):
     '''
     Checks color palette to ensure that contrast of all
     colors above threshold value
+    2.3 thres = JND (just noticeable difference for people w/o vision disability)
+    I doubled it b/c IDK (really difficult to find info re. low vision users)
     
     Input:
         specs_dict['config']['range']
@@ -144,9 +173,7 @@ def check_palette(color_range, thres=2):
     for pal_type, palette in color_range.items():
         if type(palette) == str:
             palette = translate_color(palette)
-        # for palette may want to use a distance formula instead of lumin contrast
-        # Read this: https://gramaz.io/pdf/gramazio-2016-ccd.pdf
-        issues_set = set([check_lumin(x, thres) for x in \
+        issues_set = set([check_dist(x, thres, 'palette') for x in \
                            combinations(palette, 2)])
         issues_set.discard(None)
         issues[pal_type] = issues_set
@@ -170,11 +197,15 @@ def check_all_color(color_dict):
     for key, val in color_dict.items():
         if key == 'range':
             issues.update(check_palette(color_dict[key]))
-        issues['text to background'] = {check_lumin((color_dict['background'],
-                      color_dict['text']['color']), 4.5)}
-        issues['title color to background'] = {check_lumin((color_dict['background'],
-                      color_dict['title']['color']), 4.5)}
+        issues['text to background'] = {check_dist((color_dict['background'],
+                      color_dict['text']['color']), 4.5, 'text')}
+        issues['title color to background'] = {check_dist((color_dict['background'],
+                      color_dict['title']['color']), 4.5, 'text')}
     return issues
+
+
+
+
 
 # right now, it's linting a theme, not the actual chart itself
 # i.e. it is linting all possibilities not what is actually being produced
