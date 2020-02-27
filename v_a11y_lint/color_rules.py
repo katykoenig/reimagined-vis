@@ -190,9 +190,6 @@ def check_all_color(color_dict):
 
     Output: a dictionary representing the color issues of the chart
     '''
-    # instead of feeding in specific keys instead it would be better to abstract
-    # and maybe recursively iterate into chart to pull anything w/ color
-
     issues = {}
     for key, val in color_dict.items():
         if key == 'range':
@@ -202,9 +199,6 @@ def check_all_color(color_dict):
         issues['title color to background'] = {check_dist((color_dict['background'],
                       color_dict['title']['color']), 4.5, 'text')}
     return issues
-
-
-
 
 
 # right now, it's linting a theme, not the actual chart itself
