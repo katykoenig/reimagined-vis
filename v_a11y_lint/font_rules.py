@@ -20,14 +20,11 @@ def check_font_size(font_size_dict, thres=16):
                 return 'font size too small: font should be at least 16px'
 
 
-
-def check_title(chart_obj, min_len):
+def check_title_length(title, min_len=10):
     '''
-    Checks if chart has (useful) title
+    Checks if chart has descriptive title
     '''
-    if type(chart_obj.title) == alt.utils.schemapi.UndefinedType:
-        return 'Missing chart title'
-    elif len(chart_obj.title) < min_len:
+    if len(title) < min_len:
         return 'Chart title lacks description'
 
 
@@ -36,9 +33,12 @@ def check_all_font(font_dict):
     '''
     issues = {}
     for key, val in font_dict.items():
-        for k, v in val.items():
-            if 'Size' in k:
-                check = check_font_size(val)
-                if check:
-                    issues[key] = {k: check}
+        if isinstance(val, dict):
+            for k, v in val.items():
+                if 'Size' in k:
+                    check = check_font_size(val)
+                    if check:
+                        issues[key] = {k: check}
+        else:
+            issues['title length'] = check_title_length(font_dict['title'])
     return issues
