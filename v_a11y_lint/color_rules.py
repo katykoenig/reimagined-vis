@@ -7,6 +7,7 @@ import json
 from colormath.color_diff import delta_e_cie2000
 from colormath.color_objects import XYZColor, sRGBColor, LabColor
 from colormath.color_conversions import convert_color
+import util_fns
 
 
 COLOR_MAP_INFO = ['color-maps/vega-schema.json', 
@@ -175,11 +176,11 @@ def check_palette(color_range, thres=4.6):
             palette = translate_color(palette)
         issues_set = set([check_dist(x, thres, 'palette') for x in \
                            combinations(palette, 2)])
-        issues_set.discard(None)
-        issues[pal_type] = issues_set
+        if None not in issues_set:
+            issues[pal_type] = issues_set
     return issues
-    
 
+    
 def check_all_color(color_dict):
     '''
     Checks all colors in a chart to ensure that color
@@ -191,13 +192,18 @@ def check_all_color(color_dict):
     Output: a dictionary representing the color issues of the chart
     '''
     issues = {}
-    for key, val in color_dict.items():
+    color_configs = color_dict['config']
+    for key, val in color_configs.items():
         if key == 'range':
-            issues.update(check_palette(color_dict[key]))
-        issues['text to background'] = {check_dist((color_dict['background'],
-                      color_dict['text']['color']), 4.5, 'text')}
-        issues['title color to background'] = {check_dist((color_dict['background'],
-                      color_dict['title']['color']), 4.5, 'text')}
+            issues.update(check_palette(color_configs[key]))
+        background = color_configs['background']
+        back_text_check = check_dist((background,
+                                      color_dict['text']['color']), 4.5, 'text')
+        issues = util_fns.fill_dict(issues, 'text to background', back_text_check)
+        back_title_check = check_dist((background,
+                                       color_dict['title']['color']), 4.5, 'text')
+        issues = util_fns.fill_dict(issues, 'title color to background',
+                                    back_title_check)
     return issues
 
 
