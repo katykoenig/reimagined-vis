@@ -37,16 +37,12 @@ def make_annotated_bar(source=data.barley()):
     return bars + text
 
 
-def class_theme():
-    main_palette = ["#385ed4","#55b748","#db2b27","#b589da",
-                    "#b75f31","#1696d2","#fdbf11","#ff1ae4"]
-    sequential_palette = ["#cfe8f3","#aaecff","#a2d4ec","#73bfe2", 
-                          "#46abdb","#1696d2","#12719e","#0a4c6a","#062635"]
+def bad_theme():
     return {
     "config": {
             "title": {
                 "font": "Futura",
-                "fontSize": 18,
+                "fontSize": 12,
                 "anchor": "middle",
                 "color": "darkblue",
             },
@@ -63,7 +59,7 @@ def class_theme():
          },
         "background": "#FFFFFF",
         "text": {
-               "color": "#686863",
+               "color": "LightGrey",
                "fontSize": 10,
                "fontWeight": 400,
             "baseline": "top",
@@ -71,14 +67,14 @@ def class_theme():
             "lineBreak": "\n",
            },
             "bar": {
-                "fill": "#1696d2"
+                "fill": "DarkGrey"
             },
             "line": {
                "strokeWidth": 3,
            },
         "range": {
-                "category": main_palette,
-                "diverging": "blueorange",
+                "category": "YlOrBr",
+                "diverging": "YlOrRd",
             "ramp": sequential_palette,
             "ordinal": sequential_palette,
             "heatmap": sequential_palette
@@ -88,6 +84,9 @@ def class_theme():
             }
     },
     }
+
+def bad_theme():
+
 
 def set_theme():
     alt.themes.register("my_custom_theme", class_theme)
