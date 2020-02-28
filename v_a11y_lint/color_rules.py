@@ -15,27 +15,6 @@ COLOR_MAP_INFO = ['color-maps/vega-schema.json',
                   'color-maps/interpColorMaps.json',
                   'color-maps/basic_colors.json']
 
-DEFAULT_COLORS = {'categorical': 'tableau10',
-                  'ordinal': 'blues',
-                  'quantitative': 'viridis',
-                  'temporal': 'viridis',
-                  'ramp': 'blues'
-                   }
-
-
-def grab_default(scale_type, defaults=DEFAULT_COLORS):
-    '''
-    Grabs the default color/color scheme for Altair if one not
-    explicitly stated in chart's configurations
-
-    Inputs:
-        scale_type(str): type of color scale to be used
-        defaults: a dictionary mapping type of color scale to default scale used
-
-    Outputs: a list of hex strings representing the scale's color
-    '''
-    return translate_color(defaults[scale_type])
-
 
 def get_rgb(hex_num):
     '''

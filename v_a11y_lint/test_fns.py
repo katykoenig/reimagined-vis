@@ -13,11 +13,13 @@ def make_small_df():
     return source
 
 
-def make_basic_bar(source=make_small_df()):
+def make_basic_bar(title=False, source=make_small_df()):
     chart = alt.Chart(source).mark_bar().encode(
         x='a',
         y='b'
     )
+    if title:
+        chart.title = title
     return chart
 
 
@@ -42,9 +44,9 @@ def bad_theme():
     "config": {
             "title": {
                 "font": "Futura",
-                "fontSize": 12,
+                "fontSize": 18,
                 "anchor": "middle",
-                "color": "darkblue",
+                "color": '#F5F5F5',
             },
          "axisX": {
                 "grid": False,
@@ -57,9 +59,9 @@ def bad_theme():
                 "tickSize": 6,
             "titleFontSize": 12,
          },
-        "background": "#FFFFFF",
+        "background": '#F5F5F5',
         "text": {
-               "color": "LightGrey",
+               "color": "#D3D3D3",
                "fontSize": 10,
                "fontWeight": 400,
             "baseline": "top",
@@ -73,11 +75,11 @@ def bad_theme():
                "strokeWidth": 3,
            },
         "range": {
-                "category": "YlOrBr",
-                "diverging": "YlOrRd",
-            "ramp": sequential_palette,
-            "ordinal": sequential_palette,
-            "heatmap": sequential_palette
+                "category": "ylorrd",
+                "diverging": "blueorange",
+            "ramp": "ylorrd",
+            "ordinal": "ylorrd",
+            "heatmap": "viridis"
             },
         "legend": {
                 "titleFontSize": 12
@@ -85,10 +87,105 @@ def bad_theme():
     },
     }
 
-def bad_theme():
+
+def better_theme():
+    return {
+    "config": {
+            "title": {
+                "font": "Futura",
+                "fontSize": 18,
+                "anchor": "middle",
+                "color": '#800000',
+            },
+         "axisX": {
+                "grid": False,
+                "tickSize": 6,
+             "labelFontSize": 16,
+             "titleFontSize": 16,
+         },
+        "axisY": {
+                "labelFontSize": 16,
+                "tickSize": 6,
+            "titleFontSize": 16,
+         },
+        "background": 'white',
+        "text": {
+               "color": "#D3D3D3",
+               "fontSize": 16,
+               "fontWeight": 400,
+            "baseline": "top",
+            "filled": True,
+            "lineBreak": "\n",
+           },
+            "bar": {
+                "fill": "DarkGrey"
+            },
+            "line": {
+               "strokeWidth": 3,
+           },
+        "range": {
+                "category": "ylorrd",
+                "diverging": "blueorange",
+            "ramp": "ylorrd",
+            "ordinal": "ylorrd",
+            "heatmap": "viridis"
+            },
+        "legend": {
+                "titleFontSize": 12
+            }
+    },
+    }
 
 
-def set_theme():
+def best_theme():
+    return {
+    "config": {
+            "title": {
+                "font": "Futura",
+                "fontSize": 18,
+                "anchor": "middle",
+                "color": '#800000',
+            },
+         "axisX": {
+                "grid": False,
+                "tickSize": 6,
+             "labelFontSize": 16,
+             "titleFontSize": 16,
+         },
+        "axisY": {
+                "labelFontSize": 16,
+                "tickSize": 6,
+            "titleFontSize": 16,
+         },
+        "background": 'white',
+        "text": {
+               "color": '#800000',
+               "fontSize": 16,
+               "fontWeight": 400,
+            "baseline": "top",
+            "filled": True,
+            "lineBreak": "\n",
+           },
+            "bar": {
+                "fill": "#003366"
+            },
+            "line": {
+               "strokeWidth": 3,
+           },
+        "range": {
+                "category": "ylorrd",
+                "diverging": "blueorange",
+            "ramp": "ylorrd",
+            "ordinal": "ylorrd",
+            "heatmap": "viridis"
+            },
+        "legend": {
+                "titleFontSize": 16
+            }
+    },
+    }
+
+def set_theme(class_theme):
     alt.themes.register("my_custom_theme", class_theme)
     alt.themes.enable("my_custom_theme")
 

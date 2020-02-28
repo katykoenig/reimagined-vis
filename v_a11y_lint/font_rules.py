@@ -1,6 +1,7 @@
 '''
 Functions to check for accessible fonts & font sizes
 '''
+import altair as alt
 import util_fns
 
 DEFAULT_FONT_INFO = {'fontSize': 11,
@@ -8,6 +9,14 @@ DEFAULT_FONT_INFO = {'fontSize': 11,
                                     "bold": 700},
                      'font': 'Helvetica Neue'
                      }
+
+
+def check_title(chart_obj):
+    '''
+    '''
+    if type(chart_obj.title) == alt.utils.schemapi.UndefinedType:
+        return 'Chart needs title'
+
 
 def check_font_size(font_size_dict, thres=16):
     '''
@@ -40,5 +49,7 @@ def check_all_font(font_dict):
                     if check:
                         issues[key] = {k: check}
         else:
-            issues['title length'] = check_title_length(font_dict['title'])
+            title_issue = check_title_length(font_dict['title'])
+            if title_issue:
+                issues['title length'] = title_issue
     return issues
