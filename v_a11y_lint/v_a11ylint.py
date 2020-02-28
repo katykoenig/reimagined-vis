@@ -50,20 +50,9 @@ def fill_default(chart_specs, default_dict=ALTAIR_DEFAULTS):
     Inputs missing chart info w/ default Altair settings
     '''
     for attribute, default in default_dict.items():
-        if not attribute in chart_specs.keys():
-           chart_specs['config'][attribute] = default
+        if attribute not in chart_specs.keys():
+            chart_specs['config'][attribute] = default
     return chart_specs
-
-
-    # {'title': {'font': 'Futura',
-    #   'fontSize': 18,
-    #   'anchor': 'middle',
-    #   'color': 'darkblue'},
-    #  'axisX': {'grid': False,
-    #   'tickSize': 6,
-    #   'labelFontSize': 10,
-    #   'titleFontSize': 12},
-    #  'axisY': {'labelFontSize': 10, 'tickSize': 6, 'titleFontSize': 12},
 
 
 ### Helper Fns ###
@@ -85,8 +74,8 @@ def run_lint(chart_obj, word_dict=KEYWORD_DICT):
     Takes an Altair chart object and flags accessibility issues
     '''
     all_issues = {}
-    chart_dict = chart_obj.to_dict()
-    chart_specs = fill_default(chart_dict)
+    chart_specs = chart_obj.to_dict()
+    chart_specs['config'] = fill_default(chart_obj.to_dict()['config'])
     font_dict = util_fns.call_recurse(chart_specs, word_dict['font'])
     color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
     color_issues = cr.check_all_color(color_dict)
