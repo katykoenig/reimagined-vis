@@ -123,7 +123,7 @@ def check_dist(color_tup, thres, pair_type):
     '''
     outcome = 0
     if pair_type == 'text':
-        outcome = calc_color_contrast(color_tup)    
+        outcome = calc_color_contrast(color_tup)
     elif pair_type == 'palette':
         outcome = calc_color_dist(color_tup)
     if outcome < thres:
@@ -181,7 +181,25 @@ def check_palette(color_range, thres=4.6):
                 issues[pal_type] = issues_set
     return issues
 
+
+def check_and_fill(color_tup, issues, key, check_type):
+    '''
+
+    Inputs:
+
+    Outputs:
     
+    '''
+    if check_type == 'palette':
+        # doublt JND
+        thres = 4.6
+    if check_type == 'text':
+        # from wcag
+        thres = 4.5
+    back_text_check = check_dist(color_tup, thres, check_type)
+    issues = util_fns.fill_dict(issues, key, back_text_check)
+
+
 def check_all_color(color_dict):
     '''
     Checks all colors in a chart to ensure that color
@@ -194,20 +212,36 @@ def check_all_color(color_dict):
     '''
     issues = {}
     color_configs = color_dict['config']
+    background = color_configs['background']
+    spec_filled = None
+    check_col = None
+    for key in color_dict.keys():
+        if key in ['axisX', 'axisY']:
+            check_and_fill((background, color_dict[key]['color']),
+                                     issues, f'{key} to background', 'text')
+        if key == 'encoding':
+            for key, val in color_dict[key]['color'].items():
+                if key == 'value':
+                    spec_filled = val
+                    check_and_fill((background, spec_filled),
+                                     issues, f'{key} to background', 'palette')
+                if key == 'condition':
+                    check_col = val['value']
+                    check_and_fill((background, check_col),
+                                     issues, 'encoding to background, ' + \
+                                     f'color {check_col}', 'palette')
+                if check_col and spec_filled:
+                    check_and_fill((spec_filled, check_col), issues,
+                                  'specified encoding colors too similar',
+                                  'palette')
     for key, val in color_configs.items():
         if key == 'range':
             test = check_palette(color_configs[key])
             palette_iss = check_palette(color_configs[key])
             if palette_iss:
                 issues['palette'] = palette_iss
-        background = color_configs['background']
-        back_text_check = check_dist((background, color_dict['text']['color']),
-                                     4.5, 'text')
-        issues = util_fns.fill_dict(issues, 'text to background',
-                                    back_text_check)
-        back_title_check = check_dist((background,
-                                       color_dict['title']['color']), 4.5,
-                                      'text')
-        issues = util_fns.fill_dict(issues, 'title to background',
-                                    back_title_check)
+        check_and_fill((background, color_dict['text']['color']), issues,
+                        'text to background', 'text')
+        check_and_fill((background, color_dict['title']['color']), issues,
+                      'title to background', 'text')
     return issues
