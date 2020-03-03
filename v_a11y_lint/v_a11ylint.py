@@ -45,6 +45,21 @@ ALTAIR_DEFAULTS = {
                    }
 
 
+RECOMMENDATIONS = {
+      "title to background": {
+        "colors too similar": "not enough contrast between colors - min. 4.5:1 needed"
+      },
+      "text to background": {
+        "colors too similar": "not enough contrast between colors - min. 4.5:1 needed"
+      },
+      "font size too small": "16px or higher",
+      "chart needs title": "descriptive title (10+ chars)",
+      "chart title lacks description": "descriptive title (10+ chars)",
+      "palette": "colors not perceivably different (see CIEDE2000)"
+    }
+                    
+#"colors too similar": {"palette": "must have min. dE of 4.6"}}
+
 def fill_default(chart_specs, default_dict=ALTAIR_DEFAULTS):
     '''
     Inputs missing chart info w/ default Altair settings
@@ -60,6 +75,31 @@ def iterate_on_layers(chart_objs):
     '''
     Iterates through a layered chart & flags per usual
     '''
+
+
+def pretty_print(issues_dict, verbose=False, d=0, prefix=None, verb_dict=RECOMMENDATIONS):
+    '''
+    '''
+    if not issues_dict or len(issues_dict) == 0:
+        print("\t" * d, "-")
+    else:
+        for key, val in issues_dict.items():
+            if isinstance(val, dict):
+                tabs = "\t" * d
+                print(f"{tabs}", key + ":")
+                pretty_print(val, verbose, d+1, prefix=key)
+            else:
+                if verbose:
+                    if key in verb_dict.keys():
+                        descript = verb_dict[key]
+                    elif prefix in verb_dict.keys():
+                        descript = verb_dict[prefix]
+                    else:
+                        descript = verb_dict[val]
+                    tabs = "\t" * d
+                    print(f"{tabs}" f"{key}:", f"{val}\n {tabs} Recommendation: {descript}")
+                else:
+                    print("\t" * d, f"{key}:", f"{val}")
 
 
 # NOTE NEED TO CHECK ALL CONFIGS (encoding, local & global)
@@ -80,7 +120,7 @@ def run_lint(chart_obj, word_dict=KEYWORD_DICT):
     color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
     color_issues = cr.check_all_color(color_dict)
     if color_issues:
-        all_issues['color'] = cr.check_all_color(color_dict)
+        all_issues['color'] = color_issues
     font_issues = fr.check_all_font(font_dict)
     if font_issues:
         all_issues['font'] = font_issues

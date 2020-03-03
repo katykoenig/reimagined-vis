@@ -4,18 +4,12 @@ Functions to check for accessible fonts & font sizes
 import altair as alt
 import util_fns
 
-DEFAULT_FONT_INFO = {'fontSize': 11,
-                     'fontWeight': {"normal": 400,
-                                    "bold": 700},
-                     'font': 'Helvetica Neue'
-                     }
-
 
 def check_title(chart_obj):
     '''
     '''
     if type(chart_obj.title) == alt.utils.schemapi.UndefinedType:
-        return 'Chart needs title'
+        return 'chart needs title'
 
 
 def check_font_size(font_size_dict, thres=16):
@@ -26,7 +20,7 @@ def check_font_size(font_size_dict, thres=16):
     for key, val in font_size_dict.items():
         if 'Size' in key:
             if int(font_size_dict[key]) < 16:
-                return 'font size too small: font should be at least 16px'
+                return 'font size too small'
 
 
 def check_title_length(title, min_len=10):
@@ -34,7 +28,7 @@ def check_title_length(title, min_len=10):
     Checks if chart has descriptive title
     '''
     if len(title) < min_len:
-        return 'Chart title lacks description'
+        return 'chart title lacks description'
 
 
 def check_all_font(font_dict):

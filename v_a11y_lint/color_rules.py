@@ -59,19 +59,6 @@ def color_check(color):
         return color_check(color)
 
 
-def check_distance(color_tup, thres=2.3):
-    '''
-    Checks distance between two colors to ensure just-noticeable difference
-    requirement met
-
-    Inputs:
-
-    Outputs:
-    '''
-    if calc_color_dist(color_tup) < thres:
-        return 'colors too similar'
-
-
 def calc_color_dist(color_tup):
     '''
     '''
@@ -111,7 +98,7 @@ def calc_color_contrast(color_tup):
 def check_dist(color_tup, thres, pair_type):
     outcome = 0
     if pair_type == 'text':
-        outcome = calc_color_contrast(color_tup)        
+        outcome = calc_color_contrast(color_tup)    
     elif pair_type == 'palette':
         outcome = calc_color_dist(color_tup)
     if outcome < thres:
@@ -157,6 +144,12 @@ def check_palette(color_range, thres=4.6):
                            combinations(palette, 2)])
         if None not in issues_set:
             issues[pal_type] = issues_set
+        if None in issues_set:
+            issues_set.discard(None)
+            if len(issues_set) == 1:
+                issues[pal_type] = list(issues_set)[0]
+            else:
+                issues[pal_type] = issues_set
     return issues
 
     
@@ -174,20 +167,14 @@ def check_all_color(color_dict):
     color_configs = color_dict['config']
     for key, val in color_configs.items():
         if key == 'range':
-            issues.update(check_palette(color_configs[key]))
+            test = check_palette(color_configs[key])
+            issues['palette'] = check_palette(color_configs[key])
         background = color_configs['background']
         back_text_check = check_dist((background,
                                       color_dict['text']['color']), 4.5, 'text')
         issues = util_fns.fill_dict(issues, 'text to background', back_text_check)
         back_title_check = check_dist((background,
                                        color_dict['title']['color']), 4.5, 'text')
-        issues = util_fns.fill_dict(issues, 'title color to background',
+        issues = util_fns.fill_dict(issues, 'title to background',
                                     back_title_check)
     return issues
-
-
-# right now, it's linting a theme, not the actual chart itself
-# i.e. it is linting all possibilities not what is actually being produced
-# like all the color maps, even if none are used
-# TODO: figure out what from config actually shown & only print errors w/r/t those aspects
-# TODO: have it automatically add in defaults if not specified in theme
