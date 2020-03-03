@@ -63,6 +63,12 @@ RECOMMENDATIONS = {
 def fill_default(chart_specs, default_dict=ALTAIR_DEFAULTS):
     '''
     Inputs missing chart info w/ default Altair settings
+
+    Inputs:
+        chart_specs: dictionary representation of Altair chart obj.
+        default_dict: dictionary of default config values for Altair charts
+
+    Outputs: updated dictionary represention of Altair chart obj.
     '''
     for attribute, default in default_dict.items():
         if attribute not in chart_specs.keys():
@@ -75,10 +81,22 @@ def iterate_on_layers(chart_objs):
     '''
     Iterates through a layered chart & flags per usual
     '''
+    # TO DO 
 
 
-def pretty_print(issues_dict, verbose=False, d=0, prefix=None, verb_dict=RECOMMENDATIONS):
+def pretty_print(issues_dict, verbose=False, d=0, prefix=None,
+                 verb_dict=RECOMMENDATIONS):
     '''
+    Prints an easily readable representation of accessbility issues for a chart
+
+    Inputs:
+        issue_dict: dictionary of issues in linted chart
+        verbose(bool): if recommended fixes should also be printed
+        d: int determining how far indented nested issues should print
+        prefix: None or str representing overall issue name
+        verb_dict: dictionary mapping recommended issue fixes to issue names
+
+    Oututs: None (prints relevant strings)
     '''
     if not issues_dict or len(issues_dict) == 0:
         print("\t" * d, "-")
@@ -102,16 +120,21 @@ def pretty_print(issues_dict, verbose=False, d=0, prefix=None, verb_dict=RECOMME
                     print("\t" * d, f"{key}:", f"{val}")
 
 
-# NOTE NEED TO CHECK ALL CONFIGS (encoding, local & global)
-# https://altair-viz.github.io/user_guide/configuration.html
-
-
 KEYWORD_DICT = {'font': (['font', 'Font', 'title'], []),
                 'color': (['color', 'fill', 'range', 'background'], ['filled'])}
 
-def run_lint(chart_obj, word_dict=KEYWORD_DICT):
+def run_lint(chart_obj, verbose=False, word_dict=KEYWORD_DICT):
     '''
     Takes an Altair chart object and flags accessibility issues
+
+    Inputs:
+        chart_obj: an Altair chart obj
+        verbose(bool): if recommended fixes should also be printed
+        word_dict: dictionary mapping keywords of issues to be linted to
+                   relevant words in chart obj's dictionary representation
+
+    Returns: dictionary of accessibility issues in chart obj
+             also prints a prettified version of this dictionary
     '''
     all_issues = {}
     chart_specs = chart_obj.to_dict()
@@ -129,4 +152,5 @@ def run_lint(chart_obj, word_dict=KEYWORD_DICT):
         all_issues['title'] = title_check
     if not all_issues:
         return 'Visualization is Accessible!'
+    pretty_print(all_issues, verbose)
     return all_issues
