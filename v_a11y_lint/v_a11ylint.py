@@ -46,16 +46,11 @@ ALTAIR_DEFAULTS = {
 
 
 RECOMMENDATIONS = {
-      "title to background": {
-        "colors too similar": "not enough contrast between colors - min. 4.5:1 needed"
-      },
-      "text to background": {
-        "colors too similar": "not enough contrast between colors - min. 4.5:1 needed"
-      },
       "font size too small": "16px or higher",
       "chart needs title": "descriptive title (10+ chars)",
       "chart title lacks description": "descriptive title (10+ chars)",
-      "palette": "colors not perceivably different (see CIEDE2000)"
+      "palette": "colors not perceivably different (see CIEDE2000)",
+      "colors too similar": "not enough contrast between colors - min. 4.5:1 needed"
     }
                     
 #"colors too similar": {"palette": "must have min. dE of 4.6"}}
@@ -115,7 +110,8 @@ def pretty_print(issues_dict, verbose=False, d=0, prefix=None,
                     else:
                         descript = verb_dict[val]
                     tabs = "\t" * d
-                    print(f"{tabs}" f"{key}:", f"{val}\n {tabs} Recommendation: {descript}")
+                    print(f"{tabs}" f"{key}:", f"{val}\n {tabs} " + \
+                         f"Recommendation: {descript}")
                 else:
                     print("\t" * d, f"{key}:", f"{val}")
 
