@@ -36,7 +36,7 @@ def get_luminence(rgb_tup):
     Input:
         rgb_tup: tuple representing the rgb code of a color
 
-    Output: float of the luminence of a oclor
+    Output: float of the luminence of a color
     '''
     return 0.2126 * rgb_tup[0] + 0.7152 * rgb_tup[1] + 0.0722 * rgb_tup[2]
 
@@ -61,6 +61,13 @@ def color_check(color):
 
 def calc_color_dist(color_tup):
     '''
+    Converts colors from rgb color space to L*a*b* color space
+    and gets the distance between two colors using CIEDE2000 formula
+
+    Inputs:
+        color_tup: a tuple of two colors in their rgb color format
+
+    Outputs: a float representing the distance between two colors
     '''
     color1 = rgb2lab(color_tup[0])
     color2 = rgb2lab(color_tup[1])
@@ -69,7 +76,12 @@ def calc_color_dist(color_tup):
 
 def rgb2lab(color):
     '''
-    Converts from rgb color to Lab color
+    Converts from hex to rgb color (if necessary) and then to Lab color
+
+    Input:
+        color: a tuple or list of the rgb number for a color
+
+    Output: a Lab color space representation of a color
     '''
     color = color_check(color)
     rgb = sRGBColor(color[0], color[1], color[2])
@@ -96,6 +108,19 @@ def calc_color_contrast(color_tup):
 
 
 def check_dist(color_tup, thres, pair_type):
+    '''
+    If a text color, checks the contrast between two colors
+    If a color a palette, checks that colors are perceptibly different
+    in CieLab color space
+
+    Inputs:
+        color_tup: tuple representing two colors
+        thres: float or int representing the min. required distance
+               between two colors
+        pair_type(str): either 'text' or 'palette'
+
+    Output: string representing issue (if any)
+    '''
     outcome = 0
     if pair_type == 'text':
         outcome = calc_color_contrast(color_tup)    
@@ -128,11 +153,15 @@ def check_palette(color_range, thres=4.6):
     '''
     Checks color palette to ensure that contrast of all
     colors above threshold value
-    2.3 thres = JND (just noticeable difference for people w/o vision disability)
-    I doubled it b/c IDK (really difficult to find info re. low vision users)
-    
+    Note:
+        2.3 is definited as just noticeable difference (JND)
+            for people w/o vision disability
+        There no is a JND for low vision viewers, so we somewhat
+            arbitrarily chose 4.6 as it is double
+
     Input:
-        specs_dict['config']['range']
+        color_range: a dictionary of the color palettes for each type of chart
+            e.g. {'heatmap': 'viridis'}
 
     Output: a dictionary mapping the palette type to issues (if any)
     '''
@@ -148,7 +177,7 @@ def check_palette(color_range, thres=4.6):
             issues_set.discard(None)
             if len(issues_set) == 1:
                 issues[pal_type] = list(issues_set)[0]
-            else:
+            elif len(issues_set) > 1:
                 issues[pal_type] = issues_set
     return issues
 
@@ -168,13 +197,17 @@ def check_all_color(color_dict):
     for key, val in color_configs.items():
         if key == 'range':
             test = check_palette(color_configs[key])
-            issues['palette'] = check_palette(color_configs[key])
+            palette_iss = check_palette(color_configs[key])
+            if palette_iss:
+                issues['palette'] = palette_iss
         background = color_configs['background']
-        back_text_check = check_dist((background,
-                                      color_dict['text']['color']), 4.5, 'text')
-        issues = util_fns.fill_dict(issues, 'text to background', back_text_check)
+        back_text_check = check_dist((background, color_dict['text']['color']),
+                                     4.5, 'text')
+        issues = util_fns.fill_dict(issues, 'text to background',
+                                    back_text_check)
         back_title_check = check_dist((background,
-                                       color_dict['title']['color']), 4.5, 'text')
+                                       color_dict['title']['color']), 4.5,
+                                      'text')
         issues = util_fns.fill_dict(issues, 'title to background',
                                     back_title_check)
     return issues
