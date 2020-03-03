@@ -8,8 +8,10 @@
 *  Check that opacity/alpha is not too low
 *  Write code to check only relevant parts of config, e.g. if doing a histogram, we don't need to check color maps (right now, we are checking the global/theme configs instead of the chart specific ones in some parts)
 *  Check for direct labels instead of labels only located in keys
-*  (DONE) Check "fill" for marks to ensure enough contrast between background color
 *  Write tests for our functions
+*  (DONE) Write code for prettier output
+*  (DONE) Write code for verbose option
+*  (DONE) Check "fill" for marks to ensure enough contrast between background color
 *  (DONE: mostly) Incorporate color defaults into check
 *  (DONE) For color maps, add function to check for vector space (cosine) distance (not contrast like text)
 *  (DONE) Check for title/descriptive title (min length)
@@ -23,14 +25,5 @@
 *  (DONE) Figure out default themes/config in Altair
 
 ### Writing
-* PROJECT DESCRIPTION
-* REQUIREMENTS SUMMARY
-* PROTOTYPE DESCRIPTION
-  *  Overview
-  *  Description
-  *  Rationale
-* RESPONSE TO IN-CLASS EVALUATIONS
-  *  Discussion of Successful Aspects
-  *  Discussion of Issues
-  *  Discussion of Tools & Materials
-  *  Future Changes
+
+### VIDEO
