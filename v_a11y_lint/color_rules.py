@@ -211,8 +211,7 @@ def check_all_color(color_dict):
     Output: a dictionary representing the color issues of the chart
     '''
     issues = {}
-    color_configs = color_dict['config']
-    background = color_configs['background']
+    background = color_dict['config']['background']
     spec_filled = None
     check_col = None
     for key in color_dict.keys():
@@ -234,16 +233,16 @@ def check_all_color(color_dict):
                     check_and_fill((spec_filled, check_col), issues,
                                   'specified encoding colors too similar',
                                   'palette')
-    for key, val in color_configs.items():
-        if key == 'range':
-            test = check_palette(color_configs[key])
-            palette_iss = check_palette(color_configs[key])
+        if key == 'title':
+            title_color = color_dict[key]['color']
+            check_and_fill((background, title_color), issues,
+                          'title to background', 'text')
+        if key == 'text':
+            txt_color = color_dict[key]['color']
+            check_and_fill((background, txt_color), issues,
+                            'text to background', 'text')
+        if key == 'config':
+            palette_iss = check_palette(color_dict[key]['range'])
             if palette_iss:
                 issues['palette'] = palette_iss
-        if key == 'text':
-            check_and_fill((background, color_dict['text']['color']), issues,
-                            'text to background', 'text')
-        if key == 'title':
-            check_and_fill((background, color_dict['title']['color']), issues,
-                          'title to background', 'text')
     return issues
