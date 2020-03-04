@@ -188,7 +188,7 @@ def check_and_fill(color_tup, issues, key, check_type):
     Inputs:
 
     Outputs:
-    
+
     '''
     if check_type == 'palette':
         # doublt JND
@@ -240,8 +240,10 @@ def check_all_color(color_dict):
             palette_iss = check_palette(color_configs[key])
             if palette_iss:
                 issues['palette'] = palette_iss
-        check_and_fill((background, color_dict['text']['color']), issues,
-                        'text to background', 'text')
-        check_and_fill((background, color_dict['title']['color']), issues,
-                      'title to background', 'text')
+        if key == 'text':
+            check_and_fill((background, color_dict['text']['color']), issues,
+                            'text to background', 'text')
+        if key == 'title':
+            check_and_fill((background, color_dict['title']['color']), issues,
+                          'title to background', 'text')
     return issues
