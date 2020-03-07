@@ -248,6 +248,10 @@ def check_all_color(color_dict):
             palette_iss = check_palette(color_dict[key]['range'])
             if palette_iss:
                 issues['palette'] = palette_iss
+        if key == 'bar':
+            bar_fill = color_dict[key]['fill'].lower()
+            check_and_fill((background, bar_fill), issues,
+                            'bar fill to background', 'text')
     return issues
 
 
