@@ -134,7 +134,7 @@ def run_lint(chart_obj, verbose=False, word_dict=KEYWORD_DICT):
     '''
     all_issues = {}
     chart_specs = chart_obj.to_dict()
-    chart_specs['config'] = fill_default(chart_obj.to_dict()['config'])
+    chart_specs['config'] = fill_default(chart_obj.to_dict())
     font_dict = util_fns.call_recurse(chart_specs, word_dict['font'])
     color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
     color_issues = cr.check_all_color(color_dict)
