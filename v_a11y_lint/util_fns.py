@@ -32,12 +32,18 @@ def recusive_find(configs, keywords, check_dict, prefix=None):
     '''
     for k, v in configs.items():
         if any(word in k for word in keywords[0]) and k not in keywords[1]:
-            if prefix:
+            if prefix and prefix != 'config':
                 if prefix in check_dict.keys():
-                    check_dict[prefix][k] = v
+                    if k in check_dict[prefix].keys():
+                        check_dict[prefix][k].append(v)
+                    else:
+                        check_dict[prefix][k] = [v]
                 else:
-                    check_dict[prefix] = {k: v}
+                    check_dict[prefix] = {k: [v]}
             else:
-                check_dict[k] = v
+                if k in check_dict.keys():
+                    check_dict[k].append(v)
+                else:
+                    check_dict[k] = [v]
         elif isinstance(v, dict):
             recusive_find(v, keywords, check_dict, k)

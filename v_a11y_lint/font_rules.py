@@ -32,7 +32,11 @@ def check_font_size(font_size_dict, thres=16):
     '''
     for key, val in font_size_dict.items():
         if 'Size' in key:
-            if int(font_size_dict[key]) < 16:
+            if isinstance(font_size_dict[key], list):
+                to_check = int(font_size_dict[key][0])
+            elif isinstance(font_size_dict[key], int):
+                to_check = int(font_size_dict[key])
+            if to_check < 16:
                 return 'font size too small'
 
 
@@ -62,14 +66,18 @@ def check_all_font(font_dict):
     '''
     issues = {}
     for key, val in font_dict.items():
+        if key == 'title':
+            for item in font_dict[key]:
+                if isinstance(item, dict):
+                    val = item
+                else:
+                    title_issue = check_title_length(val)
+                    if title_issue:
+                        issues['title length'] = title_issue
         if isinstance(val, dict):
             for k, v in val.items():
                 if 'Size' in k:
                     check = check_font_size(val)
                     if check:
                         issues[key] = {k: check}
-        else:
-            title_issue = check_title_length(font_dict['title'])
-            if title_issue:
-                issues['title length'] = title_issue
     return issues

@@ -52,8 +52,7 @@ RECOMMENDATIONS = {
       "palette": "colors not perceivably different (see CIEDE2000)",
       "colors too similar": "not enough contrast between colors - min. 4.5:1 needed"
     }
-                    
-#"colors too similar": {"palette": "must have min. dE of 4.6"}}
+
 
 def fill_default(chart_specs, default_dict=ALTAIR_DEFAULTS):
     '''
@@ -69,14 +68,6 @@ def fill_default(chart_specs, default_dict=ALTAIR_DEFAULTS):
         if attribute not in chart_specs.keys():
             chart_specs['config'][attribute] = default
     return chart_specs
-
-
-### Helper Fns ###
-def iterate_on_layers(chart_objs):
-    '''
-    Iterates through a layered chart & flags per usual
-    '''
-    # TO DO 
 
 
 def pretty_print(issues_dict, verbose=False, d=0, prefix=None,
@@ -136,10 +127,10 @@ def run_lint(chart_obj, verbose=False, word_dict=KEYWORD_DICT):
     chart_specs = chart_obj.to_dict()
     chart_specs['config'] = fill_default(chart_obj.to_dict())
     font_dict = util_fns.call_recurse(chart_specs, word_dict['font'])
-    color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
-    color_issues = cr.check_all_color(color_dict)
-    if color_issues:
-        all_issues['color'] = color_issues
+    #color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
+    #color_issues = cr.check_all_color(color_dict)
+    # if color_issues:
+    #     all_issues['color'] = color_issues
     font_issues = fr.check_all_font(font_dict)
     if font_issues:
         all_issues['font'] = font_issues
@@ -148,5 +139,5 @@ def run_lint(chart_obj, verbose=False, word_dict=KEYWORD_DICT):
         all_issues['title'] = title_check
     if not all_issues:
         return 'Visualization is Accessible!'
-    pretty_print(all_issues, verbose)
-    return all_issues
+    # pretty_print(all_issues, verbose)
+    return all_issues, font_dict
