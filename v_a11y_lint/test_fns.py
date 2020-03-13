@@ -44,7 +44,7 @@ def bad_theme():
     "config": {
             "title": {
                 "font": "Futura",
-                "fontSize": 18,
+                "fontSize": 12,
                 "anchor": "middle",
                 "color": '#F5F5F5',
             },
