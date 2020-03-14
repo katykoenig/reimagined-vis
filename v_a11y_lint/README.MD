@@ -1,29 +1,20 @@
-## TODO
+# v_a11y_lint
 
-### Linting Features to Add (Coding)
-### Focus right now: bar charts \& histograms
+## What is v_a11y_lint?
 
-*  Check for readable font (font size already done)
-*  Check bar chart spacing (is there white space between bars?)
-*  Check that opacity/alpha is not too low
-*  Write code to check only relevant parts of config, e.g. if doing a histogram, we don't need to check color maps (right now, we are checking the global/theme configs instead of the chart specific ones in some parts)
-*  Check for direct labels instead of labels only located in keys
-*  Write tests for our functions
-*  (DONE) Write code for prettier output
-*  (DONE) Write code for verbose option
-*  (DONE) Check "fill" for marks to ensure enough contrast between background color
-*  (DONE: mostly) Incorporate color defaults into check
-*  (DONE) For color maps, add function to check for vector space (cosine) distance (not contrast like text)
-*  (DONE) Check for title/descriptive title (min length)
-*  (DONE) Create jupyter notebook for Friday's in class prototype presentation
+v_a11y_lint is a lint software to flag issues regarding accessibility in data visualizations. Specifically, our software flags issues in font size, text color, color scales and title to ensure that the data visualization created is accessible to people with low vision. Where applicable, we use WCAG guidelines, research regarding perceivable colors and accepted best practices to create these rules, but much research is still needed to create a standardization of guidelines for accessible data visualizations.
 
-### Non-coding Specific
+v_a11y_lint lints charts created in Python's Altair data visualization library. While Altair is not Python's most popular data visualization library, as it is the Python library that follows a grammer of graphics, we hope our linter can serve as a foundation for accessible plot linters in other grammar of graphics libraries, like vega/vega-lite and ggplot. Additionally, we hope the v_a11y_lint helps to make accessible plots the norm through making it easier to create accessible data vis.
 
-*  Research re. best font practices (serifed vs. sans serifed, what should we do w/ font weight?)
-*  File altair issue as patterns encoding not supported
-*  Figure out use of "description" attribute, i.e. chart.discription --> is this accessible on JAWS? If yes, add as feature to lint
-*  (DONE) Figure out default themes/config in Altair
+## How do I make my data visualizations accessible using v_a11y_lint?
+	1. Make your chart object, using Altair.
+		* You can set your global theme yourself or use the default theme in Altair.
+		* Assign your chart object a name (not just render it).
+	2. Pass your chart object into v_a11y_lint.
+		* After downloading v_a11y_lint and it's dependencies, run `v_a11ylint.run_lint(my_chart_obj)` or if you want more information regarding the accessibility issues, run `v_a11ylint.run_lint(my_chart_obj, verbose=true)`
+		* Read what is not accessible with your vis.
+	3. Update your chart object, or global theme configurations, to address issues printed.
+	4. Rerun v_a11y_lint and repeat step 3 if necessary until you get the message:
+		```'Visualization is Accessible!'```
+	5. Save your cool new accessible data visualization using a high dpi, and proceed as normal!
 
-### Writing
-
-### VIDEO
