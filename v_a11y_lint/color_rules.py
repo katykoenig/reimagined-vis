@@ -10,10 +10,10 @@ from colormath.color_conversions import convert_color
 import util_fns
 
 
-COLOR_MAP_INFO = ['color-maps/vega-schema.json', 
-                  'color-maps/colormap.json',
-                  'color-maps/interpColorMaps.json',
-                  'color-maps/basic_colors.json']
+COLOR_MAP_INFO = ['../v_a11y_lint/color-maps/vega-schema.json', 
+                  '../v_a11y_lint/color-maps/colormap.json',
+                  '../v_a11y_lint/color-maps/interpColorMaps.json',
+                  '../v_a11y_lint/color-maps/basic_colors.json']
 
 
 def get_rgb(hex_num):
@@ -50,6 +50,8 @@ def color_check(color):
 
     Output: an rgb tuple representation of the color
     '''
+    if len(color) == 1:
+        color = color[0]
     if color[0] == '#':
         return get_rgb(color)
     elif color[0] == 'r':
@@ -184,17 +186,23 @@ def check_palette(color_range, thres=4.6):
 
 def check_and_fill(color_tup, issues, key, check_type):
     '''
-
+    Checks issues for a color pair and inputs them into
+    the issues dictionary if necessary
+    
     Inputs:
+        color_tup: tuples of two colors
+        issues: dictionary of issues
+        key: string representing issue name to be inputted
+                    into dictionary if needed
+        check_type: string representing if checking a palette or text colors
 
-    Outputs:
-
+    Outputs: None, modifies issues dictionary in place
     '''
     if check_type == 'palette':
-        # doublt JND
+        # double JND
         thres = 4.6
     if check_type == 'text':
-        # from wcag
+        # from WCAG
         thres = 4.5
     back_text_check = check_dist(color_tup, thres, check_type)
     issues = util_fns.fill_dict(issues, key, back_text_check)
@@ -211,8 +219,8 @@ def check_all_color(color_dict):
     Output: a dictionary representing the color issues of the chart
     '''
     issues = {}
-    if color_dict['config']['background']:
-        background = color_dict['config']['background']
+    if 'background' in color_dict.keys():
+        background = color_dict['background']
     else: 
         background = '#FFFFFF'
     spec_filled = None
@@ -249,7 +257,7 @@ def check_all_color(color_dict):
             if palette_iss:
                 issues['palette'] = palette_iss
         if key == 'bar':
-            bar_fill = color_dict[key]['fill'].lower()
+            bar_fill = color_dict[key]['fill'][0].lower()
             check_and_fill((background, bar_fill), issues,
                             'bar fill to background', 'palette')
     return issues

@@ -21,6 +21,16 @@ def fill_dict(dict_obj, key, issues):
 
 def call_recurse(configs, keys):
     '''
+    Calls recursive function to find keywords in dictionary and returns a
+    pared down dictionary
+
+    Inputs:
+        configs: dictionary representing the theme configuration of a chart obj
+        keys: list of keywords we want to find in dictionary
+
+    Output:
+        check_dict: dictionary with only relevant key, value pairs
+                    for given keywords
     '''
     check_dict = {}
     recusive_find(configs, keys, check_dict)
@@ -29,6 +39,16 @@ def call_recurse(configs, keys):
 
 def recusive_find(configs, keywords, check_dict, prefix=None):
     '''
+    Recursively iterates through a dictionary to check if keys anywhere
+    in configs dictionary
+
+    Inputs:
+        configs: dictionary representing the theme configuration of a chart obj
+        keywords: list of keywords we want to find in dictionary
+        check_dict: dictionary with only relevant key, value pairs
+                    for given keywords
+
+    Outputs: None, modifies dictionary in place
     '''
     for k, v in configs.items():
         if any(word in k for word in keywords[0]) and k not in keywords[1]:

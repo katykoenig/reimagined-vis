@@ -185,14 +185,16 @@ def best_theme():
     },
     }
 
+
 def set_theme(class_theme):
+    '''
+    Sets theme if class_theme function
+    '''
     alt.themes.register("my_custom_theme", class_theme)
     alt.themes.enable("my_custom_theme")
 
 def reset_theme():
+    '''
+    Resets to Altair default theme
+    '''
     alt.themes.enable('default')
-
-
-
-# for non default theme: call set_theme()
-# for default theme: reset_theme()

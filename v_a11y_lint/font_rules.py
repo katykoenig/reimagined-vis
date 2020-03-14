@@ -70,8 +70,9 @@ def check_all_font(font_dict):
             for item in font_dict[key]:
                 if isinstance(item, dict):
                     val = item
+
                 else:
-                    title_issue = check_title_length(val)
+                    title_issue = check_title_length(item)
                     if title_issue:
                         issues['title length'] = title_issue
         if isinstance(val, dict):

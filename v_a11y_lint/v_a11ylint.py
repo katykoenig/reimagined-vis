@@ -1,11 +1,11 @@
 '''
-File with main accessible visualization linters
-
+File with main accessible visualization linter functions
 '''
 from ast import literal_eval
 import font_rules as fr
 import color_rules as cr
 import util_fns
+
 
 ALTAIR_DEFAULTS = {
     'background': 'white',
@@ -65,7 +65,7 @@ def fill_default(chart_specs, default_dict=ALTAIR_DEFAULTS):
     Outputs: updated dictionary represention of Altair chart obj.
     '''
     for attribute, default in default_dict.items():
-        if attribute not in chart_specs.keys():
+        if attribute not in chart_specs['config'].keys():
             chart_specs['config'][attribute] = default
     return chart_specs
 
@@ -125,12 +125,12 @@ def run_lint(chart_obj, verbose=False, word_dict=KEYWORD_DICT):
     '''
     all_issues = {}
     chart_specs = chart_obj.to_dict()
-    chart_specs['config'] = fill_default(chart_obj.to_dict())
+    chart_specs = fill_default(chart_obj.to_dict())
     font_dict = util_fns.call_recurse(chart_specs, word_dict['font'])
-    #color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
-    #color_issues = cr.check_all_color(color_dict)
-    # if color_issues:
-    #     all_issues['color'] = color_issues
+    color_dict = util_fns.call_recurse(chart_specs, word_dict['color'])
+    color_issues = cr.check_all_color(color_dict)
+    if color_issues:
+        all_issues['color'] = color_issues
     font_issues = fr.check_all_font(font_dict)
     if font_issues:
         all_issues['font'] = font_issues
@@ -139,5 +139,5 @@ def run_lint(chart_obj, verbose=False, word_dict=KEYWORD_DICT):
         all_issues['title'] = title_check
     if not all_issues:
         return 'Visualization is Accessible!'
-    # pretty_print(all_issues, verbose)
-    return all_issues, font_dict
+    pretty_print(all_issues, verbose)
+    return all_issues
